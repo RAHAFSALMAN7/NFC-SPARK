@@ -12,7 +12,7 @@ export default function FinalCTA({ t }) {
         <h2 style={{ fontSize: "clamp(24px, 4vw, 36px)", fontWeight: 800, color: "white", fontFamily: "Poppins, sans-serif", textAlign: "center", marginBottom: 16 }}>{t.finalCta.title}</h2>
         <p style={{ fontSize: 16, color: "rgba(255,255,255,0.6)", fontFamily: "Nunito, sans-serif", textAlign: "center", marginBottom: 40, maxWidth: 560, margin: "0 auto 40px" }}>{t.finalCta.sub}</p>
         <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
-          <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" style={ctaPrimary}>💬 {t.finalCta.cta1}</a>
+          <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" style={ctaPrimary}>{t.finalCta.cta1}</a>
           <button onClick={() => document.getElementById("shop")?.scrollIntoView({ behavior: "smooth" })} style={ctaSecondary}>{t.finalCta.cta2}</button>
         </div>
       </div>

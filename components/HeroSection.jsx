@@ -1,8 +1,67 @@
 "use client";
+import { useEffect, useRef, useState } from "react";
 import PhoneMock from "./PhoneMock";
 import { NAVY, ORANGE, WHATSAPP_LINK } from "@/lib/translations";
 
 export default function HeroSection({ t }) {
+  const statsRef = useRef(null);
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const [counts, setCounts] = useState([0, 0, 0, 0]);
+
+  useEffect(() => {
+    const node = statsRef.current;
+    if (!node || hasAnimated) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting || hasAnimated) return;
+        setHasAnimated(true);
+
+        const targets = [500, 5000, 3, 4.9];
+        const durationMs = 1400;
+        const start = performance.now();
+
+        const tick = (now) => {
+          const progress = Math.min((now - start) / durationMs, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          setCounts(targets.map((target) => target * eased));
+          if (progress < 1) requestAnimationFrame(tick);
+        };
+
+        requestAnimationFrame(tick);
+      },
+      { threshold: 0.35 }
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [hasAnimated]);
+
+  const formatStatValue = (index) => {
+    const isArabic = t.dir === "rtl";
+    const value = counts[index];
+    const numberFormatter = new Intl.NumberFormat(isArabic ? "ar" : "en");
+
+    if (index === 0) {
+      const rounded = Math.round(value);
+      return isArabic ? `+${numberFormatter.format(rounded)}` : `${numberFormatter.format(rounded)}+`;
+    }
+
+    if (index === 1) {
+      const roundedK = Math.round(value / 1000);
+      return `${numberFormatter.format(roundedK)}K+`;
+    }
+
+    if (index === 2) {
+      const rounded = Math.round(value);
+      return isArabic ? `${numberFormatter.format(rounded)} دقائق` : `${numberFormatter.format(rounded)} Min`;
+    }
+
+    const fixed = (Math.round(value * 10) / 10).toFixed(1);
+    const localized = isArabic ? fixed.replace(/\d/g, (d) => "٠١٢٣٤٥٦٧٨٩"[d]) : fixed;
+    return localized;
+  };
+
   const S = {
     ctaPrimary: { display: "inline-flex", alignItems: "center", gap: 8, background: ORANGE, color: "white", padding: "14px 28px", borderRadius: 14, fontSize: 15, fontWeight: 700, fontFamily: "Poppins, sans-serif", textDecoration: "none", border: "none", cursor: "pointer", transition: "all 0.2s ease", boxShadow: "0 4px 20px rgba(234,121,70,0.4)" },
     ctaSecondary: { display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.1)", color: "white", padding: "14px 28px", borderRadius: 14, fontSize: 15, fontWeight: 700, fontFamily: "Poppins, sans-serif", textDecoration: "none", border: "1px solid rgba(255,255,255,0.25)", cursor: "pointer", transition: "all 0.2s ease", backdropFilter: "blur(10px)" },
@@ -76,12 +135,12 @@ export default function HeroSection({ t }) {
       </div>
 
       {/* Stats strip */}
-      <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, background: "rgba(255,255,255,0.04)", borderTop: "1px solid rgba(255,255,255,0.06)", backdropFilter: "blur(10px)" }}>
+      <div ref={statsRef} style={{ position: "absolute", bottom: 0, left: 0, right: 0, background: "rgba(255,255,255,0.04)", borderTop: "1px solid rgba(255,255,255,0.06)", backdropFilter: "blur(10px)" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto", padding: "16px 24px", display: "flex", justifyContent: "space-around", flexWrap: "wrap", gap: 16 }}>
           {t.stats.map((s, i) => (
             <div key={i} style={{ textAlign: "center" }}>
               <div style={{ color: ORANGE, fontWeight: 900, fontSize: 22, fontFamily: "Poppins, sans-serif" }}>
-                {s.value}
+                {formatStatValue(i)}
               </div>
               <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 11, fontFamily: "Nunito, sans-serif" }}>
                 {s.label}

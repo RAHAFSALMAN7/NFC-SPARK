@@ -19,7 +19,7 @@ export default function Testimonials({ t }) {
                   <div style={{ fontFamily: "Nunito, sans-serif", fontSize: 11, color: "#888" }}>{item.role}</div>
                 </div>
               </div>
-              <div style={{ position: "absolute", top: 24, right: 24, color: "rgba(8,8,68,0.08)", fontSize: 10 }}>★★★★★</div>
+              <div style={{ position: "absolute", top: 24, right: 24, color: "rgba(8,8,68,0.08)", fontSize: 10 }}>5/5</div>
             </div>
           ))}
         </div>

@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { MessageCircle } from "lucide-react";
 import { T, ORANGE, WHATSAPP_LINK } from "@/lib/translations";
 import Header from "@/components/Header";
 import CartDrawer from "@/components/CartDrawer";
@@ -44,22 +45,6 @@ export default function ZuccessApp() {
 
   return (
     <div dir={t.dir} style={{ fontFamily: "Nunito, sans-serif", background: "#EBEBDF", minHeight: "100vh", color: "#080844" }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&family=Nunito:wght@400;600;700&display=swap');
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; }
-        @keyframes pulse { 0%,100%{opacity:0.6;transform:scale(1)} 50%{opacity:1;transform:scale(1.05)} }
-        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
-        @keyframes fadeSlideUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
-        @keyframes gradientShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
-        .phone-float { animation: float 4s ease-in-out infinite; }
-        .fade-slide { animation: fadeSlideUp 0.7s ease both; }
-        button, a { -webkit-tap-highlight-color: transparent; }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #EBEBDF; }
-        ::-webkit-scrollbar-thumb { background: rgba(8,8,68,0.2); border-radius: 4px; }
-      `}</style>
-
       <Header
         t={t}
         locale={locale}
@@ -95,7 +80,7 @@ export default function ZuccessApp() {
         style={{ position: "fixed", bottom: 24, right: t.dir === "rtl" ? "auto" : 24, left: t.dir === "rtl" ? 24 : "auto", width: 56, height: 56, borderRadius: "50%", background: "#25D366", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, textDecoration: "none", zIndex: 999, boxShadow: "0 4px 20px rgba(37,211,102,0.4)", transition: "all 0.2s ease" }}
         onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.1)"; e.currentTarget.style.boxShadow = "0 6px 28px rgba(37,211,102,0.6)"; }}
         onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 4px 20px rgba(37,211,102,0.4)"; }}
-      >💬</a>
+      ><MessageCircle size={26} color="white" strokeWidth={2.5} /></a>
     </div>
   );
 }

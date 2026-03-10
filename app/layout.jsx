@@ -1,3 +1,5 @@
+import "./globals.css";
+
 export const metadata = {
   title: "ZUCCESS — Smart Digital Business Cards",
   description: "Create your QR card in minutes using WhatsApp. Powered by NFC + AI.",

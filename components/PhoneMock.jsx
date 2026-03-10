@@ -32,8 +32,8 @@ export default function PhoneMock() {
               </div>
             </div>
             <div style={{ marginTop: 10, display: "flex", gap: 6 }}>
-              {["📞", "✉️", "🔗"].map((icon, i) => (
-                <div key={i} style={{ flex: 1, background: "rgba(255,255,255,0.08)", borderRadius: 8, padding: "5px 0", textAlign: "center", fontSize: 12 }}>{icon}</div>
+              {["Call", "Mail", "Link"].map((icon, i) => (
+                <div key={i} style={{ flex: 1, background: "rgba(255,255,255,0.08)", borderRadius: 8, padding: "5px 0", textAlign: "center", fontSize: 10, color: "rgba(255,255,255,0.85)", fontFamily: "Poppins, sans-serif", fontWeight: 600 }}>{icon}</div>
               ))}
             </div>
           </div>

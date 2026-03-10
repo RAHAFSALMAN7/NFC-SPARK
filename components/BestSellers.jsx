@@ -20,7 +20,7 @@ export default function BestSellers({ t, addToCart }) {
         {/* Car Showroom special card */}
         <div style={{ marginTop: 24, background: `linear-gradient(135deg, ${NAVY}, #1a1a6e)`, borderRadius: 24, padding: "32px 36px", display: "flex", flexWrap: "wrap", gap: 24, alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ flex: 1, minWidth: 260 }}>
-            <span style={{ background: ORANGE, color: "white", fontSize: 11, padding: "3px 10px", borderRadius: 20, fontWeight: 700, fontFamily: "Poppins, sans-serif" }}>🚗 For Showrooms</span>
+            <span style={{ background: ORANGE, color: "white", fontSize: 11, padding: "3px 10px", borderRadius: 20, fontWeight: 700, fontFamily: "Poppins, sans-serif" }}>For Showrooms</span>
             <h3 style={{ color: "white", fontFamily: "Poppins, sans-serif", fontSize: 22, fontWeight: 800, margin: "10px 0 8px" }}>Car Showroom NFC Card</h3>
             <p style={{ color: "rgba(255,255,255,0.65)", fontFamily: "Nunito, sans-serif", fontSize: 13, lineHeight: 1.6, maxWidth: 400 }}>Each car gets its own NFC card. Tap to instantly view the car video, full specs, pricing, and a direct WhatsApp CTA — no app required.</p>
             <div style={{ marginTop: 20, display: "flex", gap: 14, flexWrap: "wrap", alignItems: "center" }}>

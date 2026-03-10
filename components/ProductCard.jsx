@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { CreditCard, ContactRound, KeyRound, ClipboardCheck } from "lucide-react";
 import { NAVY, ORANGE } from "@/lib/translations";
 
 export default function ProductCard({ product, t, onAdd }) {
@@ -11,7 +12,13 @@ export default function ProductCard({ product, t, onAdd }) {
     "For Business": "#7c3aed", "للأعمال": "#7c3aed",
   };
   const tagColor = tagColors[product.tag] || ORANGE;
-  const productEmojis = ["💳", "📇", "🔑", "⭐"];
+  const iconMap = {
+    1: CreditCard,
+    2: ContactRound,
+    3: KeyRound,
+    4: ClipboardCheck,
+  };
+  const Icon = iconMap[product.id] || CreditCard;
 
   return (
     <div
@@ -27,7 +34,21 @@ export default function ProductCard({ product, t, onAdd }) {
         <div style={{ position: "absolute", top: 12, left: 12 }}>
           <span style={{ background: tagColor, color: "white", fontSize: 10, padding: "3px 8px", borderRadius: 20, fontWeight: 700, fontFamily: "Poppins, sans-serif" }}>{product.tag}</span>
         </div>
-        <div style={{ fontSize: 48 }}>{productEmojis[product.id - 1]}</div>
+        <div
+          style={{
+            width: 72,
+            height: 72,
+            borderRadius: 16,
+            background: "rgba(255,255,255,0.12)",
+            border: "1px solid rgba(255,255,255,0.25)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.2)",
+          }}
+        >
+          <Icon size={34} color="white" strokeWidth={2.2} />
+        </div>
         <div style={{ position: "absolute", bottom: 8, right: 12, fontSize: 9, color: "rgba(255,255,255,0.4)", fontFamily: "Nunito, sans-serif" }}>Replace with {product.img}</div>
       </div>
       <div style={{ padding: "16px 18px 18px" }}>
@@ -39,7 +60,7 @@ export default function ProductCard({ product, t, onAdd }) {
             onClick={() => { setAdded(true); onAdd(product); setTimeout(() => setAdded(false), 1500); }}
             style={{ background: added ? "#16a34a" : ORANGE, color: "white", border: "none", borderRadius: 10, padding: "8px 14px", fontSize: 12, fontWeight: 700, fontFamily: "Poppins, sans-serif", cursor: "pointer", transition: "all 0.2s ease" }}
           >
-            {added ? "✓ Added" : t.addToCart}
+            {added ? "Added" : t.addToCart}
           </button>
         </div>
       </div>
