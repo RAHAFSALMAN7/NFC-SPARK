@@ -46,7 +46,7 @@ export default function Header({ t, locale, setLocale, cartCount, cartOpen, setC
 
         {/* Navigation */}
         <nav style={{ display: "flex", alignItems: "center", gap: 28 }}>
-          {[["home", t.nav.home], ["shop", t.nav.shop], ["solutions", t.nav.solutions]].map(
+          {[["home", t.nav.home], ["shop", t.nav.shop], ["solutions", t.nav.solutions], ["games", t.nav.games]].map(
             ([id, label]) => (
               <button
                 key={id}

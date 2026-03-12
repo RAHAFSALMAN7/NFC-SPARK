@@ -1,7 +1,39 @@
 "use client";
+import { useState } from "react";
 import { NAVY, ORANGE } from "@/lib/translations";
 
-export default function CartDrawer({ t, cartItems, cartOpen, setCartOpen, totalPrice }) {
+export default function CartDrawer({ t, cartItems, cartOpen, setCartOpen, totalPrice, currencyCode, removeFromCart }) {
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [checkoutError, setCheckoutError] = useState("");
+
+  const onCheckout = async () => {
+    if (totalPrice <= 0 || loading) return;
+    setCheckoutError("");
+    setLoading(true);
+    try {
+      const response = await fetch("/api/ziina/create-payment-intent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          totalPrice,
+          currencyCode,
+          cartItems,
+          locale: t.lang,
+          email,
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Unable to start checkout.");
+      setCartOpen(false);
+      window.location.href = data.checkoutUrl;
+    } catch (error) {
+      setCheckoutError(error.message || "Checkout failed.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (!cartOpen) return null;
   return (
     <div style={{ position: "fixed", top: 0, right: t.dir === "rtl" ? "auto" : 0, left: t.dir === "rtl" ? 0 : "auto", bottom: 0, width: 320, background: "white", zIndex: 2000, boxShadow: "-10px 0 40px rgba(0,0,0,0.15)", padding: 24, overflowY: "auto" }}>
@@ -10,7 +42,7 @@ export default function CartDrawer({ t, cartItems, cartOpen, setCartOpen, totalP
         <button onClick={() => setCartOpen(false)} style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer", color: NAVY }}>✕</button>
       </div>
       {cartItems.length === 0 ? (
-        <p style={{ color: "#888", fontFamily: "Nunito, sans-serif", fontSize: 14 }}>Your cart is empty.</p>
+        <p style={{ color: "#888", fontFamily: "Nunito, sans-serif", fontSize: 14 }}>{t.cart.empty}</p>
       ) : (
         <>
           {cartItems.map(item => (
@@ -18,22 +50,66 @@ export default function CartDrawer({ t, cartItems, cartOpen, setCartOpen, totalP
               <div>
                 <div style={{ fontFamily: "Poppins, sans-serif", fontSize: 13, fontWeight: 700, color: NAVY }}>{item.name}</div>
                 <div style={{ fontFamily: "Nunito, sans-serif", fontSize: 12, color: "#888" }}>×{item.qty}</div>
+                <button
+                  onClick={() => removeFromCart(item.id)}
+                  style={{
+                    marginTop: 6,
+                    border: "none",
+                    background: "transparent",
+                    color: ORANGE,
+                    fontFamily: "Poppins, sans-serif",
+                    fontSize: 11,
+                    fontWeight: 700,
+                    cursor: "pointer",
+                    padding: 0,
+                  }}
+                >
+                  {t.cart.removeOne}
+                </button>
               </div>
               <div style={{ fontFamily: "Poppins, sans-serif", fontSize: 14, fontWeight: 800, color: NAVY }}>{item.price}</div>
             </div>
           ))}
           <div style={{ marginTop: 20, padding: "16px 0", borderTop: "2px solid rgba(8,8,68,0.1)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>
-              <span style={{ fontFamily: "Poppins, sans-serif", fontWeight: 700, color: NAVY }}>Total</span>
-              <span style={{ fontFamily: "Poppins, sans-serif", fontWeight: 800, color: NAVY, fontSize: 18 }}>{totalPrice} SAR</span>
+              <span style={{ fontFamily: "Poppins, sans-serif", fontWeight: 700, color: NAVY }}>{t.cart.total}</span>
+              <span style={{ fontFamily: "Poppins, sans-serif", fontWeight: 800, color: NAVY, fontSize: 18 }}>{totalPrice} {currencyCode}</span>
             </div>
             <input
-              placeholder="Promo code"
-              style={{ width: "100%", border: "1px solid rgba(8,8,68,0.15)", borderRadius: 8, padding: "8px 12px", fontFamily: "Nunito, sans-serif", fontSize: 13, marginBottom: 10, outline: "none" }}
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder={t.cart.emailPlaceholder}
+              style={{ width: "100%", border: "1px solid rgba(8,8,68,0.15)", borderRadius: 8, padding: "10px 12px", fontFamily: "Nunito, sans-serif", fontSize: 13, marginBottom: 10, outline: "none" }}
             />
-            <button style={{ width: "100%", background: ORANGE, color: "white", border: "none", borderRadius: 10, padding: 14, fontFamily: "Poppins, sans-serif", fontWeight: 700, fontSize: 14, cursor: "pointer" }}>
-              Checkout → {/* PAYMENT_LINK placeholder */}
+            <button
+              onClick={onCheckout}
+              style={{
+                width: "100%",
+                background: ORANGE,
+                color: "white",
+                border: "none",
+                borderRadius: 10,
+                padding: 14,
+                fontFamily: "Poppins, sans-serif",
+                fontWeight: 700,
+                fontSize: 14,
+                cursor: "pointer",
+                textDecoration: "none",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                pointerEvents: totalPrice > 0 && email ? "auto" : "none",
+                opacity: totalPrice > 0 && email ? 1 : 0.6,
+              }}
+            >
+              {loading ? t.cart.processing : t.cart.checkout}
             </button>
+            {!!checkoutError && (
+              <p style={{ marginTop: 8, color: "#b42318", fontSize: 12, fontFamily: "Nunito, sans-serif" }}>
+                {checkoutError}
+              </p>
+            )}
           </div>
         </>
       )}

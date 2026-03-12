@@ -104,7 +104,7 @@ export default function HeroSection({ t }) {
             <a
               href={WHATSAPP_LINK}
               target="_blank"
-              rel="https://wa.me/966566669935?text=Hi%20ZUCCESS%2C%20I%20want%20to%20create%20my%20digital%20business%20card"
+              rel="noopener noreferrer"
               style={S.ctaPrimary}
               onMouseEnter={e => e.currentTarget.style.transform = "scale(1.04)"}
               onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}

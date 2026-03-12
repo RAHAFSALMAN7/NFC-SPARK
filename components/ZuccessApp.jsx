@@ -6,10 +6,15 @@ import Header from "@/components/Header";
 import CartDrawer from "@/components/CartDrawer";
 import HeroSection from "@/components/HeroSection";
 import HowItWorks from "@/components/HowItWorks";
+import NFCExplainerVideo from "@/components/NFCExplainerVideo";
 import BestSellers from "@/components/BestSellers";
 import Bundles from "@/components/Bundles";
 import Solutions from "@/components/Solutions";
 import DesignStudio from "@/components/DesignStudio";
+import SparkStorySection from "@/components/sections/spark/SparkStorySection";
+import GameFinderSection from "@/components/sections/spark/GameFinderSection";
+import GameCatalogSection from "@/components/sections/spark/GameCatalogSection";
+import SparkNewsletterSection from "@/components/sections/spark/SparkNewsletterSection";
 import Testimonials from "@/components/Testimonials";
 import FAQ from "@/components/FAQ";
 import FinalCTA from "@/components/FinalCTA";
@@ -38,10 +43,31 @@ export default function ZuccessApp() {
     setCartCount(c => c + 1);
   };
 
+  const removeFromCart = (productId) => {
+    setCartItems((prev) => {
+      const target = prev.find((item) => item.id === productId);
+      if (!target) return prev;
+      setCartCount((count) => Math.max(0, count - 1));
+      if (target.qty === 1) return prev.filter((item) => item.id !== productId);
+      return prev.map((item) => (item.id === productId ? { ...item, qty: item.qty - 1 } : item));
+    });
+  };
+
+  const parsePriceValue = (rawPrice) => {
+    const normalized = rawPrice
+      .replace(/[٠-٩]/g, (digit) => String(digit.charCodeAt(0) - 1632))
+      .replace(/[^0-9]/g, "");
+    return parseInt(normalized || "0", 10);
+  };
+
   const totalPrice = cartItems.reduce((sum, item) => {
-    const price = parseInt(item.price.replace(/[^0-9]/g, ""));
+    const price = parsePriceValue(item.price);
     return sum + price * item.qty;
   }, 0);
+  const cartCurrency =
+    cartItems.length > 0 && cartItems.every((item) => String(item.id).startsWith("spark-"))
+      ? "AED"
+      : "SAR";
 
   return (
     <div dir={t.dir} style={{ fontFamily: "Nunito, sans-serif", background: "#EBEBDF", minHeight: "100vh", color: "#080844" }}>
@@ -61,13 +87,20 @@ export default function ZuccessApp() {
         cartOpen={cartOpen}
         setCartOpen={setCartOpen}
         totalPrice={totalPrice}
+        currencyCode={cartCurrency}
+        removeFromCart={removeFromCart}
       />
 
       <HeroSection t={t} />
       <HowItWorks t={t} />
+      <NFCExplainerVideo t={t} locale={locale} />
       <BestSellers t={t} addToCart={addToCart} />
       <Bundles t={t} />
       <Solutions t={t} />
+      <SparkStorySection t={t} />
+      <GameFinderSection t={t} addToCart={addToCart} />
+      <GameCatalogSection t={t} addToCart={addToCart} />
+      <SparkNewsletterSection t={t} />
       <DesignStudio t={t} locale={locale} />
       <Testimonials t={t} />
       <FAQ t={t} />

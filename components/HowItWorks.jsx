@@ -79,7 +79,7 @@ export default function HowItWorks({ t }) {
         </div>
 
         <div style={{ textAlign: "center", marginTop: 40 }}>
-          <a href={WHATSAPP_LINK} target="_blank" rel="https://wa.me/966566669935?text=Hi%20ZUCCESS%2C%20I%20want%20to%20create%20my%20digital%20business%20card" style={ctaPrimary}>
+          <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" style={ctaPrimary}>
             {t.hero.cta1}
           </a>
         </div>
