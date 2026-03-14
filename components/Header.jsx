@@ -1,7 +1,24 @@
 "use client";
+import { useState } from "react";
 import { NAVY, ORANGE, WHATSAPP_LINK } from "@/lib/translations";
 
 export default function Header({ t, locale, setLocale, cartCount, cartOpen, setCartOpen, scrolled }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+
+  const navItems = [
+    ["home", t.nav.home],
+    ["shop", t.nav.shop],
+    ["solutions", t.nav.solutions],
+    ["games", t.nav.games],
+  ];
+
+  const handleScroll = (id) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    setMenuOpen(false);
+  };
+
   return (
     <header
       style={{
@@ -14,7 +31,7 @@ export default function Header({ t, locale, setLocale, cartCount, cartOpen, setC
         backdropFilter: scrolled ? "blur(20px)" : "none",
         borderBottom: scrolled ? "1px solid rgba(255,255,255,0.08)" : "none",
         transition: "all 0.3s ease",
-        padding: "0 24px",
+        padding: "0 16px",
       }}
     >
       <div
@@ -28,31 +45,20 @@ export default function Header({ t, locale, setLocale, cartCount, cartOpen, setC
         }}
       >
         {/* Logo */}
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <img
-            src="/zuccess_logo.png"
-            alt="Zuccess Logo"
-            style={{
-              height: 100,
-              width: "auto",
-              objectFit: "contain",
-              cursor: "pointer",
-            }}
-            onClick={() =>
-              document.getElementById("home")?.scrollIntoView({ behavior: "smooth" })
-            }
-          />
-        </div>
+        <img
+          src="/zuccess_logo.png"
+          alt="Zuccess Logo"
+          style={{ height: 70, cursor: "pointer" }}
+          onClick={() => handleScroll("home")}
+        />
 
-        {/* Navigation */}
-        <nav style={{ display: "flex", alignItems: "center", gap: 28 }}>
-          {[["home", t.nav.home], ["shop", t.nav.shop], ["solutions", t.nav.solutions], ["games", t.nav.games]].map(
-            ([id, label]) => (
+        {/* Desktop Navigation */}
+        {!isMobile && (
+          <nav style={{ display: "flex", gap: 28 }}>
+            {navItems.map(([id, label]) => (
               <button
                 key={id}
-                onClick={() =>
-                  document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
-                }
+                onClick={() => handleScroll(id)}
                 style={{
                   background: "none",
                   border: "none",
@@ -60,23 +66,18 @@ export default function Header({ t, locale, setLocale, cartCount, cartOpen, setC
                   fontSize: 13,
                   fontWeight: 600,
                   cursor: "pointer",
-                  fontFamily: "Nunito, sans-serif",
-                  transition: "color 0.2s",
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "white")}
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.color = "rgba(255,255,255,0.75)")
-                }
               >
                 {label}
               </button>
-            )
-          )}
-        </nav>
+            ))}
+          </nav>
+        )}
 
         {/* Right side */}
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          {/* Language toggle */}
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          
+          {/* Language */}
           <button
             onClick={() => setLocale(locale === "en" ? "ar" : "en")}
             style={{
@@ -84,11 +85,9 @@ export default function Header({ t, locale, setLocale, cartCount, cartOpen, setC
               color: "white",
               border: "1px solid rgba(255,255,255,0.2)",
               borderRadius: 8,
-              padding: "6px 12px",
+              padding: "6px 10px",
               fontSize: 12,
-              fontWeight: 700,
               cursor: "pointer",
-              fontFamily: "Poppins, sans-serif",
             }}
           >
             {t.nav.langToggle}
@@ -102,12 +101,10 @@ export default function Header({ t, locale, setLocale, cartCount, cartOpen, setC
               color: "white",
               border: "1px solid rgba(255,255,255,0.15)",
               borderRadius: 8,
-              padding: "6px 12px",
+              padding: "6px 10px",
               fontSize: 12,
-              fontWeight: 700,
-              cursor: "pointer",
-              fontFamily: "Nunito, sans-serif",
               position: "relative",
+              cursor: "pointer",
             }}
           >
             Cart
@@ -118,7 +115,6 @@ export default function Header({ t, locale, setLocale, cartCount, cartOpen, setC
                   top: -6,
                   right: -6,
                   background: ORANGE,
-                  color: "white",
                   borderRadius: "50%",
                   width: 18,
                   height: 18,
@@ -126,7 +122,6 @@ export default function Header({ t, locale, setLocale, cartCount, cartOpen, setC
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontWeight: 700,
                 }}
               >
                 {cartCount}
@@ -134,29 +129,68 @@ export default function Header({ t, locale, setLocale, cartCount, cartOpen, setC
             )}
           </button>
 
-          {/* WhatsApp */}
+          {/* Mobile Menu Button */}
+          {isMobile && (
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              style={{
+                background: "none",
+                border: "none",
+                color: "white",
+                fontSize: 22,
+                cursor: "pointer",
+              }}
+            >
+              ☰
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      {menuOpen && (
+        <div
+          style={{
+            background: NAVY,
+            padding: 20,
+            display: "flex",
+            flexDirection: "column",
+            gap: 16,
+          }}
+        >
+          {navItems.map(([id, label]) => (
+            <button
+              key={id}
+              onClick={() => handleScroll(id)}
+              style={{
+                background: "none",
+                border: "none",
+                color: "white",
+                fontSize: 16,
+                textAlign: "left",
+                cursor: "pointer",
+              }}
+            >
+              {label}
+            </button>
+          ))}
+
           <a
             href={WHATSAPP_LINK}
             target="_blank"
-            rel="noopener noreferrer"
             style={{
               background: "#25D366",
               color: "white",
+              padding: 10,
               borderRadius: 8,
-              padding: "7px 14px",
-              fontSize: 12,
-              fontWeight: 700,
+              textAlign: "center",
               textDecoration: "none",
-              fontFamily: "Poppins, sans-serif",
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
             }}
           >
             {t.whatsappBtn}
           </a>
         </div>
-      </div>
+      )}
     </header>
   );
 }
