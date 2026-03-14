@@ -1,11 +1,22 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { NAVY, ORANGE, WHATSAPP_LINK } from "@/lib/translations";
 
 export default function Header({ t, locale, setLocale, cartCount, cartOpen, setCartOpen, scrolled }) {
-  const [menuOpen, setMenuOpen] = useState(false);
 
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const navItems = [
     ["home", t.nav.home],
@@ -14,7 +25,7 @@ export default function Header({ t, locale, setLocale, cartCount, cartOpen, setC
     ["games", t.nav.games],
   ];
 
-  const handleScroll = (id) => {
+  const scrollTo = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
     setMenuOpen(false);
   };
@@ -31,7 +42,7 @@ export default function Header({ t, locale, setLocale, cartCount, cartOpen, setC
         backdropFilter: scrolled ? "blur(20px)" : "none",
         borderBottom: scrolled ? "1px solid rgba(255,255,255,0.08)" : "none",
         transition: "all 0.3s ease",
-        padding: "0 16px",
+        padding: "0 20px",
       }}
     >
       <div
@@ -44,12 +55,16 @@ export default function Header({ t, locale, setLocale, cartCount, cartOpen, setC
           justifyContent: "space-between",
         }}
       >
+
         {/* Logo */}
         <img
           src="/zuccess_logo.png"
           alt="Zuccess Logo"
-          style={{ height: 70, cursor: "pointer" }}
-          onClick={() => handleScroll("home")}
+          style={{
+            height: 70,
+            cursor: "pointer",
+          }}
+          onClick={() => scrollTo("home")}
         />
 
         {/* Desktop Navigation */}
@@ -58,7 +73,7 @@ export default function Header({ t, locale, setLocale, cartCount, cartOpen, setC
             {navItems.map(([id, label]) => (
               <button
                 key={id}
-                onClick={() => handleScroll(id)}
+                onClick={() => scrollTo(id)}
                 style={{
                   background: "none",
                   border: "none",
@@ -66,6 +81,7 @@ export default function Header({ t, locale, setLocale, cartCount, cartOpen, setC
                   fontSize: 13,
                   fontWeight: 600,
                   cursor: "pointer",
+                  fontFamily: "Nunito, sans-serif",
                 }}
               >
                 {label}
@@ -74,9 +90,9 @@ export default function Header({ t, locale, setLocale, cartCount, cartOpen, setC
           </nav>
         )}
 
-        {/* Right side */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          
+        {/* Right Side */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+
           {/* Language */}
           <button
             onClick={() => setLocale(locale === "en" ? "ar" : "en")}
@@ -85,8 +101,9 @@ export default function Header({ t, locale, setLocale, cartCount, cartOpen, setC
               color: "white",
               border: "1px solid rgba(255,255,255,0.2)",
               borderRadius: 8,
-              padding: "6px 10px",
+              padding: "6px 12px",
               fontSize: 12,
+              fontWeight: 700,
               cursor: "pointer",
             }}
           >
@@ -101,10 +118,11 @@ export default function Header({ t, locale, setLocale, cartCount, cartOpen, setC
               color: "white",
               border: "1px solid rgba(255,255,255,0.15)",
               borderRadius: 8,
-              padding: "6px 10px",
+              padding: "6px 12px",
               fontSize: 12,
-              position: "relative",
+              fontWeight: 700,
               cursor: "pointer",
+              position: "relative",
             }}
           >
             Cart
@@ -115,6 +133,7 @@ export default function Header({ t, locale, setLocale, cartCount, cartOpen, setC
                   top: -6,
                   right: -6,
                   background: ORANGE,
+                  color: "white",
                   borderRadius: "50%",
                   width: 18,
                   height: 18,
@@ -129,7 +148,7 @@ export default function Header({ t, locale, setLocale, cartCount, cartOpen, setC
             )}
           </button>
 
-          {/* Mobile Menu Button */}
+          {/* Burger Button */}
           {isMobile && (
             <button
               onClick={() => setMenuOpen(!menuOpen)}
@@ -137,7 +156,7 @@ export default function Header({ t, locale, setLocale, cartCount, cartOpen, setC
                 background: "none",
                 border: "none",
                 color: "white",
-                fontSize: 22,
+                fontSize: 24,
                 cursor: "pointer",
               }}
             >
@@ -161,7 +180,7 @@ export default function Header({ t, locale, setLocale, cartCount, cartOpen, setC
           {navItems.map(([id, label]) => (
             <button
               key={id}
-              onClick={() => handleScroll(id)}
+              onClick={() => scrollTo(id)}
               style={{
                 background: "none",
                 border: "none",
