@@ -1,81 +1,117 @@
 "use client";
+import { useEffect, useRef } from "react";
+import { Camera, Share2, QrCode, RadioTower } from "lucide-react";
 import { NAVY, BEIGE, ORANGE, WHATSAPP_LINK } from "@/lib/translations";
 
 export default function HowItWorks({ t }) {
-  const sectionStyle = { maxWidth: 1100, margin: "0 auto", padding: "80px 24px" };
-  const titleStyle = { fontSize: "clamp(24px, 4vw, 36px)", fontWeight: 800, color: NAVY, fontFamily: "Poppins, sans-serif", textAlign: "center", marginBottom: 12 };
-  const subStyle = { fontSize: 16, color: "#666", fontFamily: "Nunito, sans-serif", textAlign: "center", marginBottom: 52, maxWidth: 560, margin: "0 auto 52px" };
-  const ctaPrimary = { display: "inline-flex", alignItems: "center", gap: 8, background: ORANGE, color: "white", padding: "14px 28px", borderRadius: 14, fontSize: 15, fontWeight: 700, fontFamily: "Poppins, sans-serif", textDecoration: "none", border: "none", cursor: "pointer", transition: "all 0.2s ease", boxShadow: "0 4px 20px rgba(234,121,70,0.4)" };
+  const cardRefs = useRef([]);
+
+  useEffect(() => {
+    const elements = cardRefs.current.filter(Boolean);
+    if (!elements.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.dataset.visible = "true";
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.2, rootMargin: "60px 0px" }
+    );
+
+    elements.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
+  const sectionStyle = {
+    maxWidth: 1100,
+    margin: "0 auto",
+    padding: "80px 24px",
+  };
+  const titleStyle = {
+    fontSize: "clamp(24px, 4vw, 36px)",
+    fontWeight: 800,
+    color: NAVY,
+    fontFamily: "Poppins, sans-serif",
+    textAlign: "center",
+    marginBottom: 12,
+  };
+  const subStyle = {
+    fontSize: 16,
+    color: "#666",
+    fontFamily: "Nunito, sans-serif",
+    textAlign: "center",
+    marginBottom: 52,
+    maxWidth: 560,
+    margin: "0 auto 52px",
+  };
+  const ctaPrimary = {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 8,
+    background: ORANGE,
+    color: "white",
+    padding: "14px 28px",
+    borderRadius: 14,
+    fontSize: 15,
+    fontWeight: 700,
+    fontFamily: "Poppins, sans-serif",
+    textDecoration: "none",
+    border: "none",
+    cursor: "pointer",
+    transition: "all 0.2s ease",
+    boxShadow: "0 4px 20px rgba(234,121,70,0.4)",
+  };
+
+  const iconMap = [Camera, Share2, QrCode, RadioTower];
 
   return (
-    <section id="how-it-works" style={{ background: "white" }}>
+    <section
+      id="how-it-works"
+      style={{
+        background: "radial-gradient(circle at top left, rgba(234,121,70,0.08), transparent 55%), white",
+      }}
+    >
       <div style={sectionStyle}>
         <h2 style={titleStyle}>{t.howItWorks.title}</h2>
         <p style={subStyle}>{t.howItWorks.sub}</p>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 24, position: "relative" }}>
-          {t.howItWorks.steps.map((step, i) => (
-            <div
-              key={i}
-              style={{
-                background: BEIGE,
-                borderRadius: 20,
-                padding: "28px 22px",
-                border: "1px solid rgba(8,8,68,0.06)",
-                transition: "all 0.3s ease",
-                position: "relative"
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.transform = "translateY(-4px)";
-                e.currentTarget.style.boxShadow = "0 16px 40px rgba(8,8,68,0.12)";
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow = "none";
-              }}
-            >
-              <div style={{ fontSize: 28, fontWeight: 900, color: "rgba(8,8,68,0.06)", fontFamily: "Poppins, sans-serif", marginBottom: 8 }}>
-                {step.n}
-              </div>
-
-              {/* Icon Box */}
+        <div className="steps-grid">
+          <div className="steps-rail" aria-hidden="true" />
+          {t.howItWorks.steps.map((step, i) => {
+            const Icon = iconMap[i] || Camera;
+            return (
               <div
-                style={{
-                  width: 40,
-                  height: 40,
-                  background: `linear-gradient(135deg, ${ORANGE}, #f4a261)`,
-                  borderRadius: 12,
-                  marginBottom: 14,
-                  boxShadow: "0 4px 12px rgba(234,121,70,0.3)"
+                key={i}
+                ref={(el) => {
+                  cardRefs.current[i] = el;
                 }}
-              />
-
-              <h3 style={{ fontSize: 15, fontWeight: 700, color: NAVY, fontFamily: "Poppins, sans-serif", marginBottom: 8 }}>
-                {step.title}
-              </h3>
-
-              <p style={{ fontSize: 13, color: "#666", fontFamily: "Nunito, sans-serif", lineHeight: 1.6 }}>
-                {step.desc}
-              </p>
-
-              {i < 3 && (
-                <div
-                  style={{
-                    position: "absolute",
-                    top: "50%",
-                    right: -12,
-                    transform: "translateY(-50%)",
-                    color: ORANGE,
-                    fontSize: 18,
-                    fontWeight: 700,
-                    zIndex: 2
-                  }}
-                >
-                  →
+                className="step-card"
+                data-index={i}
+              >
+                <div className="step-header">
+                  <div className="step-badge">
+                    <span>{step.n}</span>
+                  </div>
+                  <div className="step-icon">
+                    <Icon size={22} color="white" strokeWidth={2.2} />
+                  </div>
                 </div>
-              )}
-            </div>
-          ))}
+
+                <h3 className="step-title">{step.title}</h3>
+                <p className="step-desc">{step.desc}</p>
+
+                {i < t.howItWorks.steps.length - 1 && (
+                  <div className="step-connector" aria-hidden="true">
+                    <span />
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
 
         <div style={{ textAlign: "center", marginTop: 40 }}>
@@ -84,6 +120,144 @@ export default function HowItWorks({ t }) {
           </a>
         </div>
       </div>
+
+      <style jsx>{`
+        .steps-grid {
+          position: relative;
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 22px;
+          perspective: 1400px;
+        }
+
+        @media (max-width: 1024px) {
+          .steps-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+        }
+
+        @media (max-width: 640px) {
+          .steps-grid {
+            grid-template-columns: 1fr;
+            row-gap: 18px;
+          }
+        }
+
+        .steps-rail {
+          position: absolute;
+          inset: 20% 6%;
+          border-radius: 999px;
+          border: 1px dashed rgba(8, 8, 68, 0.18);
+          pointer-events: none;
+          z-index: 0;
+        }
+
+        @media (max-width: 640px) {
+          .steps-rail {
+            inset: 10% 12%;
+          }
+        }
+
+        .step-card {
+          position: relative;
+          background: ${BEIGE};
+          border-radius: 22px;
+          padding: 22px 20px 20px;
+          border: 1px solid rgba(8, 8, 68, 0.06);
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+          transition:
+            transform 0.35s cubic-bezier(0.19, 1, 0.22, 1),
+            box-shadow 0.35s ease,
+            opacity 0.55s ease,
+            translate 0.55s ease;
+          transform-style: preserve-3d;
+          opacity: 0;
+          translate: 0 18px;
+          z-index: 1;
+        }
+
+        .step-card[data-visible='true'] {
+          opacity: 1;
+          translate: 0 0;
+        }
+
+        .step-card:hover {
+          transform: translate3d(0, -8px, 0) rotateX(4deg);
+          box-shadow: 0 20px 50px rgba(8, 8, 68, 0.16);
+        }
+
+        .step-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 14px;
+        }
+
+        .step-badge {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 40px;
+          height: 40px;
+          border-radius: 999px;
+          background: white;
+          box-shadow: 0 6px 16px rgba(8, 8, 68, 0.12);
+          border: 1px solid rgba(8, 8, 68, 0.06);
+          font-family: "Poppins, sans-serif";
+          font-weight: 800;
+          font-size: 14px;
+          color: ${NAVY};
+        }
+
+        .step-icon {
+          width: 40px;
+          height: 40px;
+          border-radius: 14px;
+          background: linear-gradient(135deg, ${ORANGE}, #f4a261);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 8px 18px rgba(234, 121, 70, 0.35);
+        }
+
+        .step-title {
+          font-size: 15px;
+          font-weight: 700;
+          color: ${NAVY};
+          font-family: "Poppins, sans-serif";
+          margin: 0 0 8px;
+        }
+
+        .step-desc {
+          font-size: 13px;
+          color: #555;
+          font-family: "Nunito, sans-serif";
+          line-height: 1.6;
+          margin: 0;
+        }
+
+        .step-connector {
+          position: absolute;
+          right: -12px;
+          top: 50%;
+          transform: translateY(-50%);
+          display: none;
+        }
+
+        @media (min-width: 1025px) {
+          .step-connector {
+            display: block;
+          }
+        }
+
+        .step-connector span {
+          display: block;
+          width: 32px;
+          height: 2px;
+          border-radius: 999px;
+          background: linear-gradient(90deg, ${ORANGE}, rgba(234, 121, 70, 0));
+        }
+      `}</style>
     </section>
   );
 }
