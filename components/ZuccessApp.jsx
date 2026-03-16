@@ -10,6 +10,7 @@ import NFCExplainerVideo from "@/components/NFCExplainerVideo";
 import BestSellers from "@/components/BestSellers";
 import Bundles from "@/components/Bundles";
 import Solutions from "@/components/Solutions";
+import Gallery from "@/components/Gallery";
 import DesignStudio from "@/components/DesignStudio";
 import SparkStorySection from "@/components/sections/spark/SparkStorySection";
 import GameFinderSection from "@/components/sections/spark/GameFinderSection";
@@ -95,12 +96,13 @@ export default function ZuccessApp() {
       <HowItWorks t={t} />
       <NFCExplainerVideo t={t} locale={locale} />
       <BestSellers t={t} addToCart={addToCart} />
+      <Gallery />
       <Bundles t={t} />
       <Solutions t={t} />
-      <SparkStorySection t={t} />
-      <GameFinderSection t={t} addToCart={addToCart} />
-      <GameCatalogSection t={t} addToCart={addToCart} />
-      <SparkNewsletterSection t={t} />
+      {false && <SparkStorySection t={t} />}
+      {false && <GameFinderSection t={t} addToCart={addToCart} />}
+      {false && <GameCatalogSection t={t} addToCart={addToCart} />}
+      {false && <SparkNewsletterSection t={t} />}
       <DesignStudio t={t} locale={locale} />
       <Testimonials t={t} />
       <FAQ t={t} />

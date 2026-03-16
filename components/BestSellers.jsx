@@ -26,7 +26,7 @@ export default function BestSellers({ t, addToCart }) {
             <div style={{ marginTop: 20, display: "flex", gap: 14, flexWrap: "wrap", alignItems: "center" }}>
               <span style={{ color: "white", fontSize: 24, fontWeight: 900, fontFamily: "Poppins, sans-serif" }}>199 SAR <span style={{ fontSize: 12, opacity: 0.5 }}>/card</span></span>
               <button
-                onClick={() => addToCart({ id: 5, name: "Car Showroom NFC Card", price: "199 SAR" })}
+                onClick={() => addToCart({ id: 7, name: "Car Showroom NFC Card", price: "199 SAR" })}
                 style={{ background: ORANGE, color: "white", border: "none", borderRadius: 10, padding: "10px 20px", fontSize: 13, fontWeight: 700, fontFamily: "Poppins, sans-serif", cursor: "pointer" }}
               >Add to Cart</button>
             </div>
