@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { Camera, Share2, QrCode, RadioTower } from "lucide-react";
+import Image from "next/image";
 import { NAVY, BEIGE, ORANGE, WHATSAPP_LINK } from "@/lib/translations";
 
 export default function HowItWorks({ t }) {
@@ -67,6 +68,7 @@ export default function HowItWorks({ t }) {
   };
 
   const iconMap = [Camera, Share2, QrCode, RadioTower];
+  const stepImages = ["/step1.jpeg", "/step2.jpeg", "/step3.jpeg", "/step4.jpeg"];
 
   return (
     <section
@@ -83,6 +85,7 @@ export default function HowItWorks({ t }) {
           <div className="steps-rail" aria-hidden="true" />
           {t.howItWorks.steps.map((step, i) => {
             const Icon = iconMap[i] || Camera;
+            const stepImage = stepImages[i] || "/step1.jpeg";
             return (
               <div
                 key={i}
@@ -92,6 +95,16 @@ export default function HowItWorks({ t }) {
                 className="step-card"
                 data-index={i}
               >
+                <div className="step-media" aria-hidden="true">
+                  <Image
+                    src={stepImage}
+                    alt=""
+                    fill
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
+                    style={{ objectFit: "cover" }}
+                  />
+                </div>
+
                 <div className="step-header">
                   <div className="step-badge">
                     <span>{step.n}</span>
@@ -125,21 +138,21 @@ export default function HowItWorks({ t }) {
         .steps-grid {
           position: relative;
           display: grid;
-          grid-template-columns: repeat(4, minmax(0, 1fr));
+          grid-template-columns: repeat(4, 1fr);
           gap: 22px;
           perspective: 1400px;
         }
 
         @media (max-width: 1024px) {
           .steps-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-columns: repeat(2, 1fr);
           }
         }
 
         @media (max-width: 640px) {
           .steps-grid {
-            grid-template-columns: 1fr;
-            row-gap: 18px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
           }
         }
 
@@ -160,6 +173,9 @@ export default function HowItWorks({ t }) {
 
         .step-card {
           position: relative;
+          width: 100%;
+          min-width: 0;
+          box-sizing: border-box;
           background: ${BEIGE};
           border-radius: 22px;
           padding: 22px 20px 20px;
@@ -190,7 +206,33 @@ export default function HowItWorks({ t }) {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          margin-bottom: 14px;
+          margin: 14px 0 12px;
+        }
+
+        .step-media {
+          position: relative;
+          width: 100%;
+          height: 170px;
+          border-radius: 16px;
+          overflow: hidden;
+          box-sizing: border-box;
+          border: 1px solid rgba(8, 8, 68, 0.08);
+          box-shadow: 0 10px 26px rgba(8, 8, 68, 0.12);
+        }
+
+        @media (max-width: 640px) {
+          .step-media {
+            height: 190px;
+          }
+        }
+
+        .step-media :global(img) {
+          transition: transform 0.55s ease;
+          transform: scale(1);
+        }
+
+        .step-card:hover .step-media :global(img) {
+          transform: scale(1.05);
         }
 
         .step-badge {
@@ -221,19 +263,21 @@ export default function HowItWorks({ t }) {
         }
 
         .step-title {
-          font-size: 15px;
-          font-weight: 700;
+          font-size: 16px;
+          font-weight: 800;
           color: ${NAVY};
           font-family: "Poppins, sans-serif";
-          margin: 0 0 8px;
+          margin: 0 0 10px;
+          text-align: left;
         }
 
         .step-desc {
           font-size: 13px;
-          color: #555;
+          color: #666;
           font-family: "Nunito, sans-serif";
-          line-height: 1.6;
+          line-height: 1.65;
           margin: 0;
+          text-align: left;
         }
 
         .step-connector {

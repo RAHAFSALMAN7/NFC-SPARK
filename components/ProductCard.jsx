@@ -30,26 +30,50 @@ export default function ProductCard({ product, t, onAdd }) {
       onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-6px)"; e.currentTarget.style.boxShadow = "0 20px 50px rgba(8,8,68,0.15)"; }}
       onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.06)"; }}
     >
-      <div style={{ background: `linear-gradient(135deg, ${NAVY} 0%, #1a1a6e 100%)`, height: 180, display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
+      <div
+        style={{
+          background: `linear-gradient(135deg, ${NAVY} 0%, #1a1a6e 100%)`,
+          height: 180,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        {!!product.img && (
+          <img
+            src={product.img}
+            alt={product.name}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              display: "block",
+            }}
+          />
+        )}
         <div style={{ position: "absolute", top: 12, left: 12 }}>
           <span style={{ background: tagColor, color: "white", fontSize: 10, padding: "3px 8px", borderRadius: 20, fontWeight: 700, fontFamily: "Poppins, sans-serif" }}>{product.tag}</span>
         </div>
-        <div
-          style={{
-            width: 72,
-            height: 72,
-            borderRadius: 16,
-            background: "rgba(255,255,255,0.12)",
-            border: "1px solid rgba(255,255,255,0.25)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.2)",
-          }}
-        >
-          <Icon size={34} color="white" strokeWidth={2.2} />
+        <div style={{ position: "absolute", bottom: 10, right: 12 }}>
+          <div
+            style={{
+              width: 48,
+              height: 48,
+              borderRadius: 14,
+              background: "rgba(0,0,0,0.25)",
+              border: "1px solid rgba(255,255,255,0.22)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              backdropFilter: "blur(6px)",
+            }}
+            aria-hidden="true"
+          >
+            <Icon size={22} color="white" strokeWidth={2.2} />
+          </div>
         </div>
-        <div style={{ position: "absolute", bottom: 8, right: 12, fontSize: 9, color: "rgba(255,255,255,0.4)", fontFamily: "Nunito, sans-serif" }}>Replace with {product.img}</div>
       </div>
       <div style={{ padding: "16px 18px 18px" }}>
         <h3 style={{ fontSize: 15, fontWeight: 700, color: NAVY, fontFamily: "Poppins, sans-serif", margin: "0 0 6px" }}>{product.name}</h3>
