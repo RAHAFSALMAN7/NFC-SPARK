@@ -1,11 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { NAVY, ORANGE, WHATSAPP_LINK } from "@/lib/translations";
 
 export default function Header({ t, locale, setLocale, cartCount, cartOpen, setCartOpen, scrolled }) {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     const handleResize = () => {
@@ -19,15 +22,35 @@ export default function Header({ t, locale, setLocale, cartCount, cartOpen, setC
   }, []);
 
   const navItems = [
-    ["home", t.nav.home],
-    ["shop", t.nav.shop],
-    ["solutions", t.nav.solutions],
-    ["games", t.nav.games],
+    { id: "home", label: t.nav.home, type: "section" },
+    { id: "shop", label: t.nav.shop, type: "section" },
+    { id: "plans", label: t.nav.plans ?? "Plans", type: "route", href: "/plans" },
+    { id: "solutions", label: t.nav.solutions, type: "section" },
+    { id: "games", label: t.nav.games, type: "section" },
   ];
 
-  const scrollTo = (id) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  const goHome = () => {
     setMenuOpen(false);
+    if (pathname === "/") {
+      document.getElementById("home")?.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
+    router.push("/");
+  };
+
+  const onNavItemClick = (item) => {
+    setMenuOpen(false);
+    if (item.type === "route" && item.href) {
+      router.push(item.href);
+      return;
+    }
+
+    if (pathname !== "/") {
+      router.push(`/#${item.id}`);
+      return;
+    }
+
+    document.getElementById(item.id)?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
@@ -64,16 +87,16 @@ export default function Header({ t, locale, setLocale, cartCount, cartOpen, setC
             height: 70,
             cursor: "pointer",
           }}
-          onClick={() => scrollTo("home")}
+          onClick={goHome}
         />
 
         {/* Desktop Navigation */}
         {!isMobile && (
           <nav style={{ display: "flex", gap: 28 }}>
-            {navItems.map(([id, label]) => (
+            {navItems.map((item) => (
               <button
-                key={id}
-                onClick={() => scrollTo(id)}
+                key={item.id}
+                onClick={() => onNavItemClick(item)}
                 style={{
                   background: "none",
                   border: "none",
@@ -84,7 +107,7 @@ export default function Header({ t, locale, setLocale, cartCount, cartOpen, setC
                   fontFamily: "Nunito, sans-serif",
                 }}
               >
-                {label}
+                {item.label}
               </button>
             ))}
           </nav>
@@ -177,10 +200,10 @@ export default function Header({ t, locale, setLocale, cartCount, cartOpen, setC
             gap: 16,
           }}
         >
-          {navItems.map(([id, label]) => (
+          {navItems.map((item) => (
             <button
-              key={id}
-              onClick={() => scrollTo(id)}
+              key={item.id}
+              onClick={() => onNavItemClick(item)}
               style={{
                 background: "none",
                 border: "none",
@@ -190,7 +213,7 @@ export default function Header({ t, locale, setLocale, cartCount, cartOpen, setC
                 cursor: "pointer",
               }}
             >
-              {label}
+              {item.label}
             </button>
           ))}
 
