@@ -10,6 +10,10 @@ export default function ProductCard({ product, t, onAdd }) {
     "Premium": "#2563eb", "مميز": "#2563eb",
     "New": "#16a34a", "جديد": "#16a34a",
     "For Business": "#7c3aed", "للأعمال": "#7c3aed",
+    "Recommended": "#7c3aed", "موصى به": "#7c3aed",
+    "Best Value": "#16a34a", "أفضل قيمة": "#16a34a",
+    "Custom": "#2563eb", "مخصص": "#2563eb",
+    "فاخرة": "#2563eb",
   };
   const tagColor = tagColors[product.tag] || ORANGE;
   const iconMap = {
