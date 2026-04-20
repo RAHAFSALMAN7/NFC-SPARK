@@ -1,34 +1,35 @@
 "use client";
 import { useState } from "react";
-import { NAVY, ORANGE } from "@/lib/translations";
+import { NAVY, ORANGE, WHATSAPP_LINK } from "@/lib/translations";
 
 export default function CartDrawer({ t, cartItems, cartOpen, setCartOpen, totalPrice, currencyCode, removeFromCart }) {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const [checkoutError, setCheckoutError] = useState("");
 
   const onCheckout = async () => {
     if (totalPrice <= 0 || loading) return;
-    setCheckoutError("");
     setLoading(true);
     try {
-      const response = await fetch("/api/ziina/create-payment-intent", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          totalPrice,
-          currencyCode,
-          cartItems,
-          locale: t.lang,
-          email,
-        }),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Unable to start checkout.");
+      const items = cartItems
+        .map((item) => `- ${item.name} x${item.qty} (${item.price})`)
+        .join("\n");
+      const message = [
+        "Hi ZUCCESS, I want to place an order:",
+        "",
+        items,
+        "",
+        `Total: ${totalPrice} ${currencyCode}`,
+        email ? `Email: ${email}` : null,
+      ]
+        .filter(Boolean)
+        .join("\n");
+
+      const separator = WHATSAPP_LINK.includes("?") ? "&" : "?";
+      const checkoutUrl = `${WHATSAPP_LINK}${separator}text=${encodeURIComponent(message)}`;
       setCartOpen(false);
-      window.location.href = data.checkoutUrl;
-    } catch (error) {
-      setCheckoutError(error.message || "Checkout failed.");
+      window.open(checkoutUrl, "_blank", "noopener,noreferrer");
+    } catch (_error) {
+      window.location.href = WHATSAPP_LINK;
     } finally {
       setLoading(false);
     }
@@ -99,17 +100,12 @@ export default function CartDrawer({ t, cartItems, cartOpen, setCartOpen, totalP
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
-                pointerEvents: totalPrice > 0 && email ? "auto" : "none",
-                opacity: totalPrice > 0 && email ? 1 : 0.6,
+                pointerEvents: totalPrice > 0 ? "auto" : "none",
+                opacity: totalPrice > 0 ? 1 : 0.6,
               }}
             >
               {loading ? t.cart.processing : t.cart.checkout}
             </button>
-            {!!checkoutError && (
-              <p style={{ marginTop: 8, color: "#b42318", fontSize: 12, fontFamily: "Nunito, sans-serif" }}>
-                {checkoutError}
-              </p>
-            )}
           </div>
         </>
       )}

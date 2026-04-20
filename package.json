@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "npm run dev:clean",
     "dev:clean": "node -e \"const fs=require('fs'); fs.rmSync('.next',{recursive:true,force:true}); fs.rmSync('.next-cache',{recursive:true,force:true});\" && next dev",
     "build": "next build",
     "build:clean": "node -e \"const fs=require('fs'); fs.rmSync('.next',{recursive:true,force:true}); fs.rmSync('.next-cache',{recursive:true,force:true});\" && next build",
@@ -14,5 +14,8 @@
     "next": "14.2.3",
     "react": "^18",
     "react-dom": "^18"
+  },
+  "devDependencies": {
+    "@netlify/plugin-nextjs": "^5.15.9"
   }
 }

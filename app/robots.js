@@ -13,7 +13,6 @@ export default function robots() {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/api/", "/checkout/"],
       },
     ],
     sitemap: `${siteUrl}/sitemap.xml`,
